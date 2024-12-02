@@ -21,7 +21,8 @@ fastify.register(fastifyFormBody);
 fastify.register(fastifyWs);
 
 // Constants
-const SYSTEM_MESSAGE = 'You are a helpful and bubbly AI assistant who loves to chat about anything the user is interested about and is prepared to offer them facts. You have a penchant for dad jokes, owl jokes, and rickrolling – subtly. Always stay positive, but work in a joke when appropriate.';
+// const SYSTEM_MESSAGE = 'You are a helpful and bubbly AI assistant who loves to chat about anything the user is interested about and is prepared to offer them facts. You have a penchant for dad jokes, owl jokes, and rickrolling – subtly. Always stay positive, but work in a joke when appropriate.';
+const SYSTEM_MESSAGE = 'Tu es un assistant vocal virtuel pour la Fondation CASIP-COJASOR. Parle vite. Sois empathique.';
 const VOICE = 'alloy';
 const PORT = process.env.PORT || 5050; // Allow dynamic port assignment
 
@@ -38,7 +39,7 @@ const LOG_EVENT_TYPES = [
 ];
 
 // Show AI response elapsed timing calculations
-const SHOW_TIMING_MATH = false;
+const SHOW_TIMING_MATH = true;
 
 // Root Route
 fastify.get('/', async (request, reply) => {
@@ -48,15 +49,25 @@ fastify.get('/', async (request, reply) => {
 // Route for Twilio to handle incoming calls
 // <Say> punctuation to improve text-to-speech translation
 fastify.all('/incoming-call', async (request, reply) => {
+    // const twimlResponse = `<?xml version="1.0" encoding="UTF-8"?>
+    //                       <Response>
+    //                           <Say>Please wait while we connect your call to the A. I. voice assistant, powered by Twilio and the Open-A.I. Realtime API</Say>
+    //                           <Pause length="1"/>
+    //                           <Say>O.K. you can start talking!</Say>
+    //                           <Connect>
+    //                               <Stream url="wss://${request.headers.host}/media-stream" />
+    //                           </Connect>
+    //                       </Response>`;
+
     const twimlResponse = `<?xml version="1.0" encoding="UTF-8"?>
-                          <Response>
-                              <Say>Please wait while we connect your call to the A. I. voice assistant, powered by Twilio and the Open-A.I. Realtime API</Say>
-                              <Pause length="1"/>
-                              <Say>O.K. you can start talking!</Say>
-                              <Connect>
-                                  <Stream url="wss://${request.headers.host}/media-stream" />
-                              </Connect>
-                          </Response>`;
+    <Response>
+        <Say>Bonjour et bienvenue à la Fondation Casip-Cojasor. Veuillez patienter un instant, un assistant virtuel va prendre votre appel.</Say>
+        <Pause length="1"/>
+        <Say>Bonjour, je suis l'assistant virtuel de la Fondation Casip-Cojasor, comment puis-je vous aider?</Say>
+        <Connect>
+            <Stream url="wss://${request.headers.host}/media-stream" />
+        </Connect>
+    </Response>`;
 
     reply.type('text/xml').send(twimlResponse);
 });
